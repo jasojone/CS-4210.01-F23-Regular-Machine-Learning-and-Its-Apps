@@ -1,7 +1,7 @@
 #-------------------------------------------------------------------------
-# AUTHOR: your name
-# FILENAME: title of the source file
-# SPECIFICATION: description of the program
+# AUTHOR: Jason Jones
+# FILENAME: knn.py
+# SPECIFICATION: 
 # FOR: CS 4210- Assignment #2
 # TIME SPENT: how long it took you to complete the assignment
 #-----------------------------------------------------------*/
