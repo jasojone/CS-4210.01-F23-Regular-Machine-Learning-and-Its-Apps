@@ -1,9 +1,9 @@
 #-------------------------------------------------------------------------
-# AUTHOR: your name
+# AUTHOR: Jason Jones
 # FILENAME: title of the source file
 # SPECIFICATION: description of the program
 # FOR: CS 4210- Assignment #2
-# TIME SPENT: how long it took you to complete the assignment
+# TIME SPENT: arbitrary - since the inception of its availability  I have though of this assignment.
 #-----------------------------------------------------------*/
 
 #IMPORTANT NOTE: DO NOT USE ANY ADVANCED PYTHON LIBRARY TO COMPLETE THIS CODE SUCH AS numpy OR pandas. You have to work here only with standard
@@ -28,10 +28,9 @@ for ds in dataSets:
              if i > 0: #skipping the header
                 dbTraining.append (row)
 
-    #transform the original categorical training features to numbers and add to the 4D array X. For instance Young = 1, Prepresbyopic = 2, Presbyopic = 3
+    # transform the original categorical training features to numbers and add to the 4D array X. For instance Young = 1, Prepresbyopic = 2, Presbyopic = 3
     # so X = [[1, 1, 1, 1], [2, 2, 2, 2], ...]]
-    #--> add your Python code here
-    # X =
+    
 
     #transform the original categorical training classes to numbers and add to the vector Y. For instance Yes = 1, No = 2, so Y = [1, 1, 2, 2, ...]
     #--> add your Python code here
@@ -63,7 +62,3 @@ for ds in dataSets:
     #print the average accuracy of this model during the 10 runs (training and test set).
     #your output should be something like that: final accuracy when training on contact_lens_training_1.csv: 0.2
     #--> add your Python code here
-
-
-
-
