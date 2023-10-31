@@ -1,0 +1,61 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Define the heaviside function
+def heaviside(z):
+    return 1 if z >= 0 else 0
+# Define the AND operator
+def train_perceptron_AND(data, targets, lr=0.4, epochs=10):
+    w1, w2 = 1, 1
+    w0 = 1  # bias
+    
+    # To store results for each iteration
+    rows = []
+    errors = []
+    
+    # Train for specified number of epochs
+    for epoch in range(epochs):
+        total_error = 0
+        # Iterate over each data point
+        for x1, x2, t in zip(data[:, 0], data[:, 1], targets):
+            z = w1 * x1 + w2 * x2 + w0 # net input
+            y = heaviside(z) # activation function
+            error = t - y # error
+            # Update weights and bias
+            w1 += lr * error * x1 
+            w2 += lr * error * x2
+            w0 += lr * error
+            # Update total error
+            total_error += abs(error)
+            
+            # Append results to rows
+            rows.append([epoch + 1, x1, x2, w1, w2, w0, z, y, error])
+        # Append total error to errors
+        errors.append(total_error)
+        if total_error == 0:
+            print(f"Converged in epoch {epoch + 1}")
+            break
+
+    # Convert rows to DataFrame and display
+    df = pd.DataFrame(rows, columns=["Epoch", "x1", "x2", "w1", "w2", "w0", "z(net)", "y", "error"])
+    print(df)
+
+    # Plot error over iterations
+    plt.plot(errors)
+    plt.xlabel('Epochs')
+    plt.ylabel('Total Error')
+    plt.title('Error Over Iterations')
+    plt.show()
+
+    return w1, w2, w0
+
+data = np.array([
+    [0, 0],
+    [0, 1],
+    [1, 0],
+    [1, 1]
+])
+targets = [0, 0, 0, 1]
+
+w1, w2, w0 = train_perceptron_AND(data, targets)

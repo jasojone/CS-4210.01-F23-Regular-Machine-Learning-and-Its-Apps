@@ -1,0 +1,56 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+def heaviside(z):
+    return 1 if z >= 0 else 0
+
+def train_perceptron_OR(data, targets, lr=0.1, epochs=10):
+    w1 = 0
+    w2 = 0
+    w0 = 0  # bias
+    
+    # To store results for each iteration
+    rows = []
+    errors = []
+    
+    for epoch in range(epochs):
+        total_error = 0
+        
+        for (x1, x2), t in zip(data, targets):
+            z = w1 * x1 + w2 * x2 + w0
+            y = heaviside(z)
+            error = t - y
+            
+            w1 += lr * error * x1
+            w2 += lr * error * x2
+            w0 += lr * error
+            
+            total_error += abs(error)
+            
+            # Append results including epoch to rows
+            rows.append([epoch + 1, x1, x2, w1, w2, w0, z, y, error])
+        
+        errors.append(total_error)
+        if total_error == 0:
+            print(f"Converged in epoch {epoch + 1}")
+            break
+
+    # Convert rows to DataFrame and display
+    df = pd.DataFrame(rows, columns=["Epoch", "x1", "x2", "w1", "w2", "w0", "z(net)", "y", "error"])
+    print(df)
+
+    # Plot error over iterations
+    plt.plot(errors)
+    plt.xlabel('Epochs')
+    plt.ylabel('Total Error')
+    plt.title('Error Over Iterations')
+    plt.show()
+
+    return w1, w2, w0
+
+# OR dataset
+data = [(0, 0), (0, 1), (1, 0), (1, 1)]
+targets = [0, 1, 1, 1]
+
+# Train and display results
+train_perceptron_OR(data, targets)
