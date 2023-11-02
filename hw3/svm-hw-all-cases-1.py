@@ -20,8 +20,12 @@ def plot_svc_decision_function(model, ax=None, plot_support=True):
     ax.contour(XX, YY, Z, colors='k', levels=[-1, 0, 1], alpha=0.5, linestyles=['--', '-', '--'])
     
     # plot support vectors
+# plot support vectors
     if plot_support:
         ax.scatter(model.support_vectors_[:, 0], model.support_vectors_[:, 1], s=200, linewidth=1, facecolors='none', edgecolors='k')
+        for sv in model.support_vectors_:
+            ax.text(sv[0], sv[1], f"({sv[0]:.2f}, {sv[1]:.2f})", ha='right', va='bottom', fontsize=8)
+
     ax.set_xlim(xlim)
     ax.set_ylim(ylim)
     
@@ -45,18 +49,19 @@ def plot_svc_decision_function(model, ax=None, plot_support=True):
 #     ax.set_xlim(xlim)
 #     ax.set_ylim(ylim)
     
-def print_decision_boundary(w, b):
-    # Decision boundary equation
-    plt.text(0.05, 0.65, "Decision boundary equation: {:.3f}x + {:.3f}y + {:.3f} = 0".format(w[0], w[1], b), transform=plt.gca().transAxes, fontsize=12, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.5))
-
-def train_svm(data, labels, C_value=1e6):
+def print_decision_boundary(w, b, title_suffix=''):
+    # Decision boundary equation in the form w.x + b = 0
+    equation = f"{title_suffix} Decision boundary equation: {w[0]:.3f}x1 + {w[1]:.3f}x2 + {b:.3f} = 0"
+    plt.text(0.05, 0.65, equation, transform=plt.gca().transAxes, fontsize=12, verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.5))  
+    
+def train_svm(data, labels, C_value):
     # SVM training
     clf = svm.SVC(kernel='linear', C=C_value)
     clf.fit(data, labels)
     return clf
 
-def update_plot(new_yellow=None, new_black=None, C_value=1e6, title_suffix=''):
-    global yellow_points, black_points, all_points, labels
+def update_plot(new_yellow=None, new_black=None, C_value=0, title_suffix=''):
+    global yellow_points, black_points, all_points, labels, clf
     if new_yellow is not None:
         yellow_points = np.vstack((yellow_points, new_yellow))
         all_points = np.vstack((all_points, new_yellow))
@@ -78,12 +83,12 @@ def update_plot(new_yellow=None, new_black=None, C_value=1e6, title_suffix=''):
     plt.scatter(yellow_points[:, 0], yellow_points[:, 1], color='yellow', s=30, label='Yellow Points')
     plt.scatter(black_points[:, 0], black_points[:, 1], color='black', s=30, label='Black Points')
     plot_svc_decision_function(clf, plot_support=True)
-    print_decision_boundary(w, b)  # Call the function to plot the decision boundary
+    print_decision_boundary(w, b, 'Updated Plot')  # Call the function to plot the decision boundary
     plt.xlabel('X-axis')
     plt.ylabel('Y-axis')
     plt.title(f'Updated Decision Boundary & Support Vectors {title_suffix}')
     plt.legend()
-    plt.show()
+    # plt.show()
 
 def initial_setup():
     global yellow_points, black_points, all_points, labels, clf
@@ -104,12 +109,12 @@ def plot_initial_decision_boundary():
     # Extracting the weight vector (w) and bias (b)
     w = clf.coef_[0]
     b = clf.intercept_[0]
-    print_decision_boundary(w, b)  # Call the function to plot the decision boundary
+    print_decision_boundary(w, b, '')  # Call the function to plot the decision boundary
     plt.xlabel('X-axis')
     plt.ylabel('Y-axis')
     plt.title('Initial Decision Boundary & Support Vectors')
     plt.legend()
-    plt.show()
+    # plt.show()
     
 def plot_test_samples():
     # Test samples
@@ -136,23 +141,62 @@ def plot_test_samples():
     plt.ylabel('Y-axis')
     plt.title('Test Samples Classification')
     plt.legend()
-    plt.show()
+    # plt.show()
 
 def main():
     initial_setup()
     plot_initial_decision_boundary()
+    # Calculating the decision function for each support vector
+    def calculate_decision_function(support_vectors, coef, intercept):
+        return np.dot(support_vectors, coef) + intercept
+
+    # Print necessary information for math calculations
+    w = clf.coef_[0]
+    b = clf.intercept_[0]
+    support_vectors = clf.support_vectors_
+    decision_function_values = calculate_decision_function(support_vectors, w, b)
+    print("w: ", w)
+    print("b: ", b)
+    print("support vectors: ", support_vectors)
+    print("decision function values for support vectors: ", decision_function_values)
+    
+    
     # Plotting the decision boundary
     # plt.figure(figsize=(10, 7))
     # plot_additional_decision_boundaries()  # Plotting the additional decision boundary
     # plt.show()
     
     # Add new training samples and update plot
-    update_plot(new_black=[7,5], title_suffix='with Black (7,5)')
-    update_plot(new_yellow=[4,2], title_suffix='with Yellow (4,2)')
+    update_plot(new_black=[7,5], title_suffix='with Black (7,5)', C_value=1e6)
+    update_plot(new_yellow=[4,2], title_suffix='with Yellow (4,2)', C_value=1e6)
     # Plot test samples
     plot_test_samples()
     # Changing C value and adding new training sample
     update_plot(new_black=[4,4], C_value=1, title_suffix='with Black (4,4) & C=1')
-    update_plot(new_black=[4,4], C_value=1e6, title_suffix='with Black (4,4) & C=100')
+    w = clf.coef_[0]
+    b = clf.intercept_[0]
+    support_vectors = clf.support_vectors_
+    decision_function_values = calculate_decision_function(support_vectors, w, b)
+
+    print("After retraining:")
+    print("w: ", w)
+    print("b: ", b)
+    print("support vectors: ", support_vectors)
+    print("decision function values for support vectors: ", decision_function_values)
+    
+    update_plot(new_black=[4,4], C_value=1e6, title_suffix='with Black (4,4) & C=1e6')
+    w = clf.coef_[0]
+    b = clf.intercept_[0]
+    support_vectors = clf.support_vectors_
+    decision_function_values = calculate_decision_function(support_vectors, w, b)
+
+    print("After retraining:")
+    print("w: ", w)
+    print("b: ", b)
+    print("support vectors: ", support_vectors)
+    print("decision function values for support vectors: ", decision_function_values)
+    
+    
+    plt.show()
 
 main()
