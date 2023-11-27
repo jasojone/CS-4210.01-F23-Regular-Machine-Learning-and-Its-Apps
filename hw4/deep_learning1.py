@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------
 # AUTHOR: Jason Jones
-# FILENAME: deep_learning.py
+# FILENAME: deep_learning1.py
 # SPECIFICATION: This program will use the Fashion MNIST dataset to train a neural network to classify images of clothing.
 # FOR: CS 4210- Assignment #4
 # TIME SPENT: 1 hour
